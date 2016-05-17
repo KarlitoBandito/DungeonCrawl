@@ -12,22 +12,22 @@ namespace DungeonCrawl
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        //Variables
+        Texture2D player;
+        Vector2 playerPos;
+        SpriteFont font;
+        float time, speed;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
+            //Set the starting position of the player
+            playerPos = new Vector2(0.0f, 0.0f);
             base.Initialize();
         }
 
@@ -39,8 +39,9 @@ namespace DungeonCrawl
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
+            
+            // Load player sprite
+            player = Content.Load<Texture2D>("Player");
         }
 
         /// <summary>
@@ -61,8 +62,25 @@ namespace DungeonCrawl
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            time = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            speed = 1000.0f;
 
-            // TODO: Add your update logic here
+            KeyboardState state = Keyboard.GetState();
+            if (state.IsKeyDown(Keys.Down))
+            {
+                playerPos.Y += speed * time;
+            }else if(state.IsKeyDown(Keys.Up)){
+                playerPos.Y -= speed * time;
+            }
+
+            if (state.IsKeyDown(Keys.Left))
+            {
+                playerPos.X -= speed * time;
+            }
+            else if (state.IsKeyDown(Keys.Right))
+            {
+                playerPos.X += speed * time;
+            }
 
             base.Update(gameTime);
         }
@@ -73,9 +91,12 @@ namespace DungeonCrawl
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.DarkRed);
+            
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            spriteBatch.Draw(player, playerPos, Color.White);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
